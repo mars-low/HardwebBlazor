@@ -2,12 +2,18 @@
     return {
         reloadIFrame: function (id, newSrc) {
             const iFrame = document.getElementById(id);
-            if (iFrame) {
-                if (newSrc) {
-                    iFrame.src = newSrc;
-                } else {
-                    iFrame.contentWindow.location.reload();
-                }
+            if (!iFrame) {
+                return;
+            }
+
+            if (!newSrc) {
+                iFrame.contentWindow.location.reload();
+            } else if (iFrame.src !== `${window.location.origin}${newSrc}`) {
+                iFrame.src = newSrc;
+            } else {
+                // There needs to be some change so the iFrame is actually reloaded
+                iFrame.src = '';
+                setTimeout(() => iFrame.src = newSrc);
             }
         },
         changeDisplayUrl: function (url) {
@@ -40,53 +46,58 @@ window.App.CodeEditor = window.App.CodeEditor || (function () {
     let _overrideValue;
     let _currentLanguage;
 
-    function initEditor(editorId, value, language) {
-        if (!editorId) {
-            return;
-        }
-
-        require.config({ paths: { 'vs': 'lib/monaco-editor/min/vs' } });
-        require(['vs/editor/editor.main'], () => {
-            _editor = monaco.editor.create(document.getElementById(editorId), {
-                fontSize: '16px',
-                value: _overrideValue || value || '',
-                language: language || _currentLanguage || 'razor'
-            });
-
-            _overrideValue = null;
-            _currentLanguage = language || _currentLanguage;
-        });
-    }
-
-    function getValue() {
-        return _editor && _editor.getValue();
-    }
-
-    function setValue(value, language) {
-        if (_editor) {
-            _editor.setValue(value || '');
-            if (language && language !== _currentLanguage) {
-                monaco.editor.setModelLanguage(_editor.getModel(), language);
-                _currentLanguage = language;
-            }
-        } else {
-            _overrideValue = value;
-            _currentLanguage = language || _currentLanguage;
-        }
-    }
-
-    function focus() {
-        return _editor && _editor.focus();
-    }
-
     return {
-        init: initEditor,
-        initEditor: initEditor,
-        getValue: getValue,
-        setValue: setValue,
-        focus: focus,
+        init: function (editorId, value, language) {
+            if (!editorId) {
+                return;
+            }
+
+            require.config({ paths: { 'vs': 'lib/monaco-editor/min/vs' } });
+            require(['vs/editor/editor.main'], () => {
+                _editor = monaco.editor.create(document.getElementById(editorId), {
+                    fontSize: '16px',
+                    value: _overrideValue || value || '',
+                    language: language || _currentLanguage || 'razor'
+                });
+
+                _overrideValue = null;
+                _currentLanguage = language || _currentLanguage;
+            });
+        },
+        getValue: function () {
+            return _editor && _editor.getValue();
+        },
+        setValue: function (value, language) {
+            if (_editor) {
+                _editor.setValue(value || '');
+                if (language && language !== _currentLanguage) {
+                    monaco.editor.setModelLanguage(_editor.getModel(), language);
+                    _currentLanguage = language;
+                }
+
+                _editor.setScrollPosition({ scrollTop: 0 });
+            } else {
+                _overrideValue = value;
+                _currentLanguage = language || _currentLanguage;
+            }
+        },
+        setLanguage: function (language) {
+            if (!_editor || _currentLanguage === language) {
+                return;
+            }
+
+            monaco.editor.setModelLanguage(_editor.getModel(), language);
+        },
+        focus: function () {
+            return _editor && _editor.focus();
+        },
+        resize: function () {
+            _editor && _editor.layout();
+        },
         dispose: function () {
             _editor = null;
+            _overrideValue = null;
+            _currentLanguage = null;
         }
     };
 }());
@@ -133,32 +144,22 @@ window.App.Repl = window.App.Repl || (function () {
 
             throttleLastTimeFuncNameMappings['resetEditor'] = new Date();
             Split(['#' + _editorContainerId, '#' + _resultContainerId], {
-                elementStyle: (dimension, size, gutterSize) => ({
-                    'flex-basis': `calc(${size}% - ${gutterSize + 1}px)`,
+                elementStyle: (_, size, gutterSize) => ({
+                    'width': `calc(${size}% - ${gutterSize + 1}px)`,
                 }),
-                gutterStyle: (dimension, gutterSize) => ({
-                    'flex-basis': `${gutterSize}px`,
+                gutterStyle: (_, gutterSize) => ({
+                    'width': `${gutterSize}px`,
                 }),
-                onDrag: () => throttle(resetEditor, 100, 'resetEditor'),
-                onDragEnd: () => resetEditor
+                onDrag: () => throttle(window.App.CodeEditor.resize, 30, 'resetEditor'),
+                onDragEnd: window.App.CodeEditor.resize
             });
         }
-    }
-
-    function resetEditor(newLanguage) {
-        const value = window.App.CodeEditor.getValue();
-        const oldEditorElement = document.getElementById(_editorId);
-        if (oldEditorElement && oldEditorElement.childNodes) {
-            oldEditorElement.childNodes.forEach(c => oldEditorElement.removeChild(c));
-        }
-
-        window.App.CodeEditor.initEditor(_editorId, value, newLanguage);
     }
 
     function onWindowResize() {
         setElementHeight(_resultContainerId);
         setElementHeight(_editorContainerId, true);
-        resetEditor();
+        window.App.CodeEditor.resize();
     }
 
     function onKeyDown(e) {
@@ -226,7 +227,8 @@ window.App.Repl = window.App.Repl || (function () {
         },
         setCodeEditorContainerHeight: function (newLanguage) {
             setElementHeight(_editorContainerId, true);
-            resetEditor(newLanguage);
+            window.App.CodeEditor.setLanguage(newLanguage);
+            window.App.CodeEditor.resize();
         },
         updateUserAssemblyInCacheStorage: function (rawFileBytes) {
             if (!rawFileBytes) {

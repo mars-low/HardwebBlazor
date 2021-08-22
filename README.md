@@ -1,7 +1,7 @@
-# TryMudBlazor
+# HardwebBlazor
 
-## What is TryMudBlazor?
-TryMudBlazor is a playground for trying out [MudBlazor](https://mudblazor.com) components entirely in the browser. It is based on [Blazor REPL](https://blazorrepl.com) which is running entirely on top of Blazor WASM - the [WebAssembly](https://webassembly.org) hosting model of [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor).
+## What is HardwebBlazor?
+HardwebBlazor is a platform for fast prototyping of USB and BLE devices entirely in the browser. It is based on [Blazor REPL](https://blazorrepl.com) which is running entirely on top of Blazor WASM - the [WebAssembly](https://webassembly.org) hosting model of [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor). Javascript interoperability gives access to powerful [device APIs](https://web.dev/devices/) that allow to communicate with real devices from Chrome browser without additional software. 
 
 ## License
 GPL 2

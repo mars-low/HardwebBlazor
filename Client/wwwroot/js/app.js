@@ -55,7 +55,12 @@ window.App.CodeEditor = window.App.CodeEditor || (function () {
             require.config({ paths: { 'vs': 'lib/monaco-editor/min/vs' } });
             require(['vs/editor/editor.main'], () => {
                 _editor = monaco.editor.create(document.getElementById(editorId), {
-                    fontSize: '16px',
+                    fontSize: '12px',
+                    wordWrap: 'on',
+                    minimap: {
+                        enabled: false,
+                    },
+                    lineNumbersMinChars: 3,
                     value: _overrideValue || value || '',
                     language: language || _currentLanguage || 'razor'
                 });
@@ -144,6 +149,7 @@ window.App.Repl = window.App.Repl || (function () {
 
             throttleLastTimeFuncNameMappings['resetEditor'] = new Date();
             Split(['#' + _editorContainerId, '#' + _resultContainerId], {
+                minSize: 0,
                 elementStyle: (_, size, gutterSize) => ({
                     'width': `calc(${size}% - ${gutterSize + 1}px)`,
                 }),

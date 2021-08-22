@@ -15,6 +15,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="CurrieTechnologies.Razor.Clipboard" Version="1.3.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,18 +8,10 @@
         <MudButton Color="Color.Inherit" Class="mr-3" Variant="Variant.Text" @onclick="@CompileAsync" Disabled="@Loading" title="Run (Ctrl + S)" StartIcon="@Icons.Material.Filled.PlayCircleOutline">
             Run
         </MudButton>
-        <MudButton Color="Color.Inherit" Class="mr-3" Variant="Variant.Text" @onclick="@ShowSaveSnippetPopup" id="save-snippet-btn" title="Save public snippet" StartIcon="@Icons.Material.Filled.Save">
-            Save
+        <MudButton Color="Color.Inherit" Class="mr-3" Variant="Variant.Text" @onclick="@PasteAsync" Disabled="@Loading" title="Paste (Ctrl + V)" StartIcon="@Icons.Material.Filled.PlayCircleOutline">
+            Paste
         </MudButton>
-        <MudText Typo="Typo.body2" Class="ml-10">
-            MudBlazor @Version
-        </MudText>
     </MudAppBar>
-
-    <SaveSnippetPopup @bind-Visible="@SaveSnippetPopupVisible"
-        InvokerId="save-snippet-btn"
-        CodeFiles="@CodeFiles.Values"
-        UpdateActiveCodeFileContentAction="UpdateActiveCodeFileContent"></SaveSnippetPopup>
 
     <div class="trymudblazor-editor">
         <ReplLoader Show="@Loading"

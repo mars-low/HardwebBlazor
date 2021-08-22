@@ -8,6 +8,7 @@ namespace BlazorRepl.Client
     using BlazorRepl.Client.Models;
     using BlazorRepl.Client.Services;
     using BlazorRepl.Core;
+    using CurrieTechnologies.Razor.Clipboard;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,7 @@ namespace BlazorRepl.Client
             builder.Services.AddMudServices();
             builder.Services.UseWebUSB();
             builder.Services.AddBlazmBluetooth();
+            builder.Services.AddScoped<ClipboardService>();
 
             await builder.Build().RunAsync();
         }

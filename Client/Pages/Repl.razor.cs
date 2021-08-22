@@ -9,6 +9,7 @@
     using BlazorRepl.Client.Models;
     using BlazorRepl.Client.Services;
     using BlazorRepl.Core;
+    using CurrieTechnologies.Razor.Clipboard;
     using Microsoft.AspNetCore.Components;
     using Microsoft.JSInterop;
 
@@ -20,6 +21,9 @@
         private DotNetObjectReference<Repl> dotNetInstance;
         private string errorMessage;
         private CodeFile activeCodeFile;
+
+        [Inject]
+        public ClipboardService ClipboardService { get; set; }
 
         [Inject]
         public SnippetsService SnippetsService { get; set; }
@@ -143,6 +147,11 @@
             this.CodeFileNames = this.CodeFiles.Keys.ToList();
 
             await base.OnInitializedAsync();
+        }
+
+        private async Task PasteAsync()
+        {
+            this.activeCodeFile.Content = await this.ClipboardService.ReadTextAsync();
         }
 
         private async Task CompileAsync()

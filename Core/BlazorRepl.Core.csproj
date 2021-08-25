@@ -14,7 +14,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Blazor.Extensions.WebUSB" Version="1.0.0" />
     <PackageReference Include="Blazm.Bluetooth" Version="0.0.2" />
   </ItemGroup>
 
@@ -24,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UserComponents\BlazorRepl.UserComponents.csproj" />
+    <ProjectReference Include="..\Hardweb\WebUSB\src\WebUSB\WebUSB.csproj" />
   </ItemGroup>
 
   <ItemGroup>

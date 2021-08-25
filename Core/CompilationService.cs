@@ -12,13 +12,13 @@
     using System.Text;
     using System.Threading.Tasks;
     using Blazm.Bluetooth;
-    using Blazor.Extensions.WebUSB;
     using Microsoft.AspNetCore.Components.Routing;
     using Microsoft.AspNetCore.Razor.Language;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Razor;
     using Microsoft.JSInterop;
+    using WebUSB;
 
     public class CompilationService
     {
@@ -34,7 +34,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.JSInterop
 @using MudBlazor
-@using Blazor.Extensions.WebUSB
+@using WebUSB
 @using Blazm.Bluetooth
 ";
 
@@ -71,7 +71,7 @@
                 typeof(RequiredAttribute).Assembly, // System.ComponentModel.Annotations
                 typeof(MudBlazor.MudButton).Assembly, // MudBlazor
                 typeof(FluentValidation.AbstractValidator<>).Assembly,
-                typeof(USB).Assembly, // Blazor.Extensions.WebUSB
+                typeof(USB).Assembly, // WebUSB
                 typeof(BluetoothNavigator).Assembly, // Blazm.Bluetooth
             };
 

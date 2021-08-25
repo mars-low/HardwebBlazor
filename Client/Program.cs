@@ -4,7 +4,6 @@ namespace BlazorRepl.Client
     using System.Net.Http;
     using System.Threading.Tasks;
     using Blazm.Bluetooth;
-    using Blazor.Extensions.WebUSB;
     using BlazorRepl.Client.Models;
     using BlazorRepl.Client.Services;
     using BlazorRepl.Core;
@@ -15,6 +14,7 @@ namespace BlazorRepl.Client
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
     using MudBlazor.Services;
+    using WebUSB;
 
     public class Program
     {

@@ -3,7 +3,7 @@ namespace BlazorRepl.Client
     using System;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using Blazm.Bluetooth;
+    using WebBluetooth;
     using BlazorRepl.Client.Models;
     using BlazorRepl.Client.Services;
     using BlazorRepl.Core;
@@ -36,7 +36,7 @@ namespace BlazorRepl.Client
             builder.Logging.Services.AddSingleton<ILoggerProvider, HandleCriticalUserComponentExceptionsLoggerProvider>();
             builder.Services.AddMudServices();
             builder.Services.UseWebUSB();
-            builder.Services.AddBlazmBluetooth();
+            builder.Services.AddWebBluetooth();
             builder.Services.AddScoped<ClipboardService>();
 
             await builder.Build().RunAsync();

@@ -11,7 +11,7 @@
     using System.Runtime;
     using System.Text;
     using System.Threading.Tasks;
-    using Blazm.Bluetooth;
+    using WebBluetooth;
     using Microsoft.AspNetCore.Components.Routing;
     using Microsoft.AspNetCore.Razor.Language;
     using Microsoft.CodeAnalysis;
@@ -35,7 +35,7 @@
 @using Microsoft.JSInterop
 @using MudBlazor
 @using WebUSB
-@using Blazm.Bluetooth
+@using WebBluetooth
 ";
 
         private const string MudBlazorServices = @"
@@ -72,7 +72,7 @@
                 typeof(MudBlazor.MudButton).Assembly, // MudBlazor
                 typeof(FluentValidation.AbstractValidator<>).Assembly,
                 typeof(USB).Assembly, // WebUSB
-                typeof(BluetoothNavigator).Assembly, // Blazm.Bluetooth
+                typeof(BluetoothNavigator).Assembly, // WebBluetooth
             };
 
             var assemblyNames = basicReferenceAssemblyRoots

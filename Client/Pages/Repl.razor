@@ -32,12 +32,14 @@
         </div>
     </div>
 </div>
+@*
 @if (Diagnostics?.Count() > 0)
 {
     <div class="trymudblazor-errorlist">
       <ErrorList @bind-Show="@AreDiagnosticsShown" Diagnostics="@Diagnostics"/>
     </div>
 }
+*@
 
 @code
 {

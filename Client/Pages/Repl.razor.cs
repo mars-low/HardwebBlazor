@@ -180,6 +180,10 @@
                     this.UpdateLoaderTextAsync);
 
                 this.Diagnostics = compilationResult.Diagnostics.OrderByDescending(x => x.Severity).ThenBy(x => x.Code).ToList();
+                foreach (var diagnostic in Diagnostics)
+                {
+                    Console.WriteLine("{0}:{1}:{2}:{3}:{4}", diagnostic.Severity, diagnostic.Code, diagnostic.Description, diagnostic.File, diagnostic.Line);
+                }
                 this.AreDiagnosticsShown = true;
             }
             catch (Exception)

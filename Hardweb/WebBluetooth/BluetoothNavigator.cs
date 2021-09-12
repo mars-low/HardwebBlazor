@@ -12,13 +12,25 @@ namespace WebBluetooth
     public class BluetoothNavigator
     {
         private IJSRuntime jsRuntime;
+        private readonly DotNetObjectReference<BluetoothNavigator> _dotNetRef;
+        private bool initialized = false;
+        public event Action<string> OnDeviceDisconnected;
+
         public BluetoothNavigator(IJSRuntime jsRuntime)
         {
             this.jsRuntime = jsRuntime;
+            this._dotNetRef = DotNetObjectReference.Create(this);
+        }
+
+        public async Task setDotNetRefAsync() {
+            if (initialized) return;
+            await jsRuntime.InvokeVoidAsync("blazmwebbluetooth.setDotNetRef", _dotNetRef);
+            initialized = true;
         }
 
         public async Task<Device> RequestDeviceAsync(RequestDeviceQuery query)
-        {
+        {   
+            await setDotNetRefAsync();
             string json=JsonConvert.SerializeObject(query,
                             Newtonsoft.Json.Formatting.None,
                             new JsonSerializerSettings
@@ -98,6 +110,15 @@ namespace WebBluetooth
             await SetupNotifyAsync(deviceId, serviceId.ToString(), characteristicId.ToString());
         }
         #endregion
+
+        public async Task DisconnectAsync(string deviceId) {
+            await jsRuntime.InvokeVoidAsync("blazmwebbluetooth.disconnectDevice", deviceId);
+        }
+
+        [JSInvokable("onBleDisconnect")]
+        public void JsOnDisconnect(string deviceId) {
+                OnDeviceDisconnected?.Invoke(deviceId);
+        }
 
         public void TriggerNotification(CharacteristicEventArgs args)
         {

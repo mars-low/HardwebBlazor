@@ -2,6 +2,12 @@
 
 var PairedBluetoothDevices = [];
 
+var DotNetReference = null;
+
+window.blazmwebbluetooth.setDotNetRef = (dotNetRef) => {
+    DotNetReference = dotNetRef;
+}
+
 window.blazmwebbluetooth.requestDevice = async (query) => {    
     var objquery = JSON.parse(query);
     console.log(query);
@@ -9,16 +15,34 @@ window.blazmwebbluetooth.requestDevice = async (query) => {
     var device = await navigator.bluetooth.requestDevice(objquery);
     console.log(device);
     await device.gatt.connect();
-    device.addEventListener('gattserverdisconnected', onDisconnected);
+    device.addEventListener('gattserverdisconnected', onDisconnect);
     PairedBluetoothDevices.push(device);
 
     return { "Name": device.name, "Id": device.id };    
 }
 
+window.blazmwebbluetooth.disconnectDevice = async (deviceId) => {
+    var device = PairedBluetoothDevices.filter(function (item) {
+        return item.id==deviceId;
+    });
 
-function onDisconnected() {
+    if (device) {
+        try {
+            device.gatt.disconnect();
+        } catch (e) { }
+    }
+}
+
+async function onDisconnect(event) {
+    if (DotNetReference) {
+        var deviceId = event.target.id;
+        await DotNetReference.invokeMethodAsync("onBleDisconnect", deviceId);
+        PairedBluetoothDevices = PairedBluetoothDevices.filter(function (item) {
+            return item.gatt.connected;
+        });
+    }
     console.log('> Bluetooth Device disconnected');
-    connect();
+    // connect();
 }
 
 function connect(bluetoothDevice) {
